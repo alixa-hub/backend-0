@@ -1,7 +1,7 @@
 {
   "name": "perfume-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for perfume website",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -51,13 +51,15 @@ app.post('/perfumes/add', async (req, res) => {
     }
 });
 
-
 // 6. DATABASE CONNECTION
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
   .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+  .catch(err => console.log("MongoDB connection error:", err));
 
-// 7. SERVER START (Yeh zaroori hai)
+// 7. SERVER START
 app.listen(PORT, () => {
-    console.log(`🚀 Server http://localhost:${PORT} par chal raha hai.`);
+    console.log(`Server running on port ${PORT}`);
 });
