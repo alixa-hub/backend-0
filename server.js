@@ -1,65 +1,40 @@
-// server.js (Final and Cleaned Code)
+import express from "express";
+import cors from "cors";
 
-// 1. ENVIRONMENT AND PACKAGES
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors'); 
-
-// 2. EXPRESS APP SETUP
 const app = express();
-// PORT 5000 ya 8000 use karein (Agar 5000 masla kare to 8000 kar dijiyega)
-const PORT = process.env.PORT || 5000; 
 
-// 3. MODEL DEFINITION
-const PerfumeSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: String,
-    price: Number,
-    image: String
-}, { timestamps: true });
-const Perfume = mongoose.model("Perfume", PerfumeSchema);
+// CORS allow frontend
+app.use(cors());
 
-// 4. MIDDLEWARE
-app.use(cors()); 
-app.use(express.json()); 
-
-// 5. ROUTES
-// GET / route (Base URL)
-app.get('/', (req, res) => {
-    res.send('Perfume Portfolio Backend Running');
+// Home route
+app.get("/", (req, res) => {
+  res.send("Backend is running...");
 });
 
-// GET /perfumes route (Data nikalne ke liye)
-app.get('/perfumes', async (req, res) => {
-    try {
-        const perfumes = await Perfume.find();
-        res.status(200).json(perfumes); 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+// Perfumes API
+app.get("/perfumes", (req, res) => {
+  res.json([
+    {
+      name: "Rose Blast",
+      description: "A soft floral fresh scent.",
+      price: 30,
+      image: "https://i.imgur.com/7yUvePI.jpeg"
+    },
+    {
+      name: "Vanilla Mist",
+      description: "Warm vanilla and amber notes.",
+      price: 40,
+      image: "https://i.imgur.com/h9WAO1l.jpeg"
+    },
+    {
+      name: "Ocean Breeze",
+      description: "Fresh aquatic scent with a hint of citrus.",
+      price: 35,
+      image: "https://i.imgur.com/5LrRkZL.jpeg"
     }
+  ]);
 });
 
-// POST /perfumes/add route (Data shamil karne ke liye)
-app.post('/perfumes/add', async (req, res) => {
-    try {
-        const perfume = new Perfume(req.body);
-        await perfume.save();
-        res.json({ message: "Perfume added successfully", perfume });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// Export app for Vercel
+export default app;
 
-// 6. DATABASE CONNECTION
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log("MongoDB connection error:", err));
-
-// 7. SERVER START
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
